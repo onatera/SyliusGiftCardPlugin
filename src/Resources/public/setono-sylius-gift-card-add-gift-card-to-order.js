@@ -1,29 +1,32 @@
-(function ($) {
-  'use strict';
+HTMLElement.prototype.addGiftCardToOrder = function () {
+    const element = this;
+    const url = element.dataset.action;
+    const redirectUrl = element.dataset.redirect;
 
-  $.fn.extend({
-    addGiftCardToOrder: function () {
-      const $element = $(this);
-      const url = $element.data('action');
-      const redirectUrl = $element.data('redirect');
-
-      $element.on('submit', function (event) {
+    element.addEventListener('submit', function (event) {
         event.preventDefault();
 
-        $.ajax(url, {
-          method: 'POST',
-          data: $element.serialize(),
-          success: function () {
-            window.location.href = redirectUrl;
-          },
-          error: function (xhr) {
-            $('.setono-sylius-gift-card-gift-card-block').replaceWith(xhr.responseText);
+        const xhr = new XMLHttpRequest();
+        const data = new FormData(element);
+        const params = new URLSearchParams(data);
 
-            $('#setono-sylius-gift-card-add-gift-card-to-order').addGiftCardToOrder();
-          },
-        });
-      });
+        const opts = {
+            method: 'POST',
+            body: params
+        }
 
-    },
-  });
-})(jQuery);
+        fetch(url, opts)
+            .then(res => {
+                if (res.redirected) {
+                    window.location.href = redirectUrl;
+                } else {
+                    res.text().then(function (text) {
+                        document.querySelector('.setono-sylius-gift-card-gift-card-block').outerHTML = text;
+                        document.querySelector('#setono-sylius-gift-card-add-gift-card-to-order').addGiftCardToOrder();
+                    });
+                }
+            })
+            .catch(err => console.log(err));
+        }
+    );
+}
