@@ -28,7 +28,7 @@
         "symfony/routing": "^4.4 || ^5.0 || ^6.0",
         "symfony/translation-contracts": "^2.4",
         "symfony/validator": "^4.4 || ^5.0 || ^6.0",
-        "twig/twig": "^2.14",
+        "twig/twig": "^2.14||^3.14",
         "webmozart/assert": "^1.10"
     },
     "require-dev": {
